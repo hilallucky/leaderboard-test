@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: nestjs-mysql
+    image: mysql:8.0
+    restart: always
+    networks:
+      - nestjs-api-leaderboard_network
+    # volumes:
+    #   - mysql-data:/var/lib/mysql/data
+    environment:
+      MYSQL_ROOTUSER: root
+      MYSQL_ROOT_PASSWORD: hilal123
+      MYSQL_DATABASE: leaderboard
+    ports:
+      - 3306:3306
+
+  nest-api:
+    env_file:
+      - .env
+    image: nest-api-leaderboard
+    build:
+      context: .
+      dockerfile: Dockerfile
+      #target: production
+    container_name: nest-api
+    ports:
+      - 4000:4000
+    # command: [ "sh", "scripts/start-api.sh" ]
+    networks:
+      - nestjs-api-leaderboard_network
+    # depends_on:
+    #   - mysql
+
+networks:
+  nestjs-api-leaderboard_network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
