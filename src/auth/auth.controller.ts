@@ -17,6 +17,7 @@ import { LoginService } from 'src/users/login/login.service';
 import { RegisterService } from 'src/users/register/register.service';
 import { CreateRegisterDto } from 'src/users/register/dto/create-register.dto';
 import { Logger } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -56,6 +57,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Post('check')
   async checkIn(@Request() req) {
@@ -65,7 +67,7 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@Request() req) {
-    console.log(`${req.protocol}://${req.get('Host')}${req.originalUrl}`);
+    Logger.log(`Url for OpenApi: auth/profile`, 'check profile');
 
     return req.user;
   }

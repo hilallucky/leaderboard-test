@@ -80,8 +80,8 @@ export class ScoreService {
 
   async findAll(player_id: number, user: any) {
     try {
-      if (user.user_type !== "admin" && player_id !== user.id) {
-        this.response.unauthorizedResponse(HttpStatus.UNAUTHORIZED, `You are unauthorized`);
+      if (user.user_type == "player") {
+        player_id = user.id;
       }
 
       const data = await this.scoreRepository.find({
@@ -92,7 +92,7 @@ export class ScoreService {
 
       this.response.successMessage(data, HttpStatus.OK, `Success add new score`);
     } catch (error) {
-      this.response.successMessage(null, HttpStatus.OK, `Invalid Player IDsss!`);
+      this.response.successMessage(null, HttpStatus.OK, `Invalid Player ID!`);
     }
 
     return this.response;

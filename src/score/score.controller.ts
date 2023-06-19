@@ -1,10 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, Req, Query } from '@nestjs/common';
 import { ScoreService } from './score.service';
 import { CreateScoreDto } from './dto/create-score.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
+class pid {
+  @ApiProperty({
+    type: 'number',
+    name: 'player_id',
+    description: 'player_id'
+  })
+  pid: number
+}
+
 @ApiTags('score')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('score')
 export class ScoreController {
@@ -29,7 +39,7 @@ export class ScoreController {
   }
 
   @Get()
-  findAll(@Request() req: any, player_id: number) {
-    return this.scoreService.findAll(player_id, req.user);
+  findAll(@Request() req: any, @Query('player_id') player_id: pid) {
+    return this.scoreService.findAll(Number(player_id), req.user);
   }
 }

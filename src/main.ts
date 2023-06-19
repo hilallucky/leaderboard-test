@@ -8,6 +8,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
 
+  const config = new DocumentBuilder()
+    .setTitle('Leaderboard Open API')
+    .setDescription('Leaderboard Open API Documentations')
+    .setVersion('0.1')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
+
   // app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
@@ -19,15 +29,6 @@ async function bootstrap() {
       },
     }),
   );
-
-  const config = new DocumentBuilder()
-    .setTitle('Leaderboard Open API')
-    .setDescription('Leaderboard Open API Documentations')
-    .setVersion('0.1')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
 
   await app.listen(configService.get<number>('APP_PORT') || 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
